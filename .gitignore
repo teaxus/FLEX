@@ -18,5 +18,6 @@ DerivedData
 *.xcuserstate
 .DS_Store
 /Example/Pods
+/FLEX.framework
 Podfile.lock
 IDEWorkspaceChecks.plist

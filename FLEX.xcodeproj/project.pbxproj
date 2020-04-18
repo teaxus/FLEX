@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		7D9AD9ED244AF7180010B8CC /* Arch */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 7D9AD9F0244AF7180010B8CC /* Build configuration list for PBXAggregateTarget "Arch" */;
+			buildPhases = (
+				7D9AD9F1244AF73C0010B8CC /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Arch;
+			productName = Arch;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		04F1CA191C137CF1000A52B0 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 04F1CA181C137CF1000A52B0 /* LICENSE */; };
 		1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */; };
@@ -1634,6 +1648,9 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = FLEX;
+				KnownAssetTags = (
+					New,
+				);
 				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = Flipboard;
 				TargetAttributes = {
@@ -1644,6 +1661,11 @@
 						CreatedOnToolsVersion = 6.4;
 						LastSwiftMigration = 1130;
 						ProvisioningStyle = Manual;
+					};
+					7D9AD9ED244AF7180010B8CC = {
+						CreatedOnToolsVersion = 11.3.1;
+						DevelopmentTeam = AVV48W47TG;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1662,6 +1684,7 @@
 			targets = (
 				3A4C941E1B5B20570088C3F2 /* FLEX */,
 				1C27A8B51F0E5A0300F0D02D /* FLEXTests */,
+				7D9AD9ED244AF7180010B8CC /* Arch */,
 			);
 		};
 /* End PBXProject section */
@@ -1683,6 +1706,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7D9AD9F1244AF73C0010B8CC /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n\n# Step 3. Copy Swift modules from iphonesimulator build (if it exists) to the copied framework directory\nSIMULATOR_SWIFT_MODULES_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\"\nif [ -d \"${SIMULATOR_SWIFT_MODULES_DIR}\" ]; then\ncp -R \"${SIMULATOR_SWIFT_MODULES_DIR}\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\nfi\n\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${PROJECT_DIR}\"\n\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1C27A8B21F0E5A0300F0D02D /* Sources */ = {
@@ -2083,6 +2126,24 @@
 			};
 			name = Release;
 		};
+		7D9AD9EE244AF7180010B8CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AVV48W47TG;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		7D9AD9EF244AF7180010B8CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AVV48W47TG;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2109,6 +2170,15 @@
 			buildConfigurations = (
 				3A4C94361B5B20570088C3F2 /* Debug */,
 				3A4C94371B5B20570088C3F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D9AD9F0244AF7180010B8CC /* Build configuration list for PBXAggregateTarget "Arch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D9AD9EE244AF7180010B8CC /* Debug */,
+				7D9AD9EF244AF7180010B8CC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
